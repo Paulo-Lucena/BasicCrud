@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service // Vai indicar ao Spring que aqui ficará as regras de negocio da aplicação
 public class PersonService {
 
@@ -31,5 +34,13 @@ public class PersonService {
                 .builder()
                 .message("Pessoa criada com o ID " + savedPerson.getId()) // Mensagem que irá retornar após a criação
                 .build();
+    }
+
+
+    public List<PersonDTO> listAll() { //Metodo FindAll
+        List<Person> allPeople = personRepository.findAll();
+        return allPeople.stream() //Api Stram para transformar os dados em coleções
+                .map(personMapper::toDTO) // Para cada um dos registros da lista, vai ser chamado o metodo person, e será convertida para DTO
+                .collect(Collectors.toList()); //Saída será uma lista
     }
 }

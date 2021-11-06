@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController // Significa que o controlador será acessado através de uma API REST.
 @RequestMapping("/api/v1/people") // Informa o caminho de acesso principal da API.
@@ -33,4 +34,9 @@ public class PersonController {
 
     }
 
+    @GetMapping // Anotação Getting é solicitada
+    public List<PersonDTO> listAll(){
+        return personService.listAll();
+
+    }
 }
