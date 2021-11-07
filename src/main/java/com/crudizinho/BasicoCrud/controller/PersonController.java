@@ -45,4 +45,10 @@ public class PersonController {
     public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException { // @PathVariable indica que numa requisição HTTP será passada uma requisição // throws será a mensagem de exception
         return personService.findById(id);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) throws PersonNotFoundException {
+        personService.delete(id);
+        }
 }

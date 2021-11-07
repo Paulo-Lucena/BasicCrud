@@ -6,6 +6,7 @@ import com.crudizinho.BasicoCrud.entity.Person;
 import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
 import com.crudizinho.BasicoCrud.mapper.PersonMapper;
 import com.crudizinho.BasicoCrud.repository.PersonRepository;
+import org.hibernate.PersistentObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,10 +49,20 @@ public class PersonService {
 
 
     public PersonDTO findById(Long id) throws PersonNotFoundException { //throws será a mensagem de exception
-        Optional<Person> optionalPerson = personRepository.findById(id); // Informa que será retornado um objeto
-        if (optionalPerson.isEmpty()){
-            throw new PersonNotFoundException(id);
-        }
-        return  personMapper.toDTO(optionalPerson.get());
+        Person person = verifyIfExists(id);
+
+        return  personMapper.toDTO(person);
+    }
+
+    private Person verifyIfExists(Long id) throws PersonNotFoundException {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id)); //Esse metodo evita que o codigo findbyid seja escrito varias vezes, assim fazemos um metodo para codigos repetidos
+    }
+
+
+    public void delete(Long id) throws PersonNotFoundException {
+        verifyIfExists(id);
+        personRepository.deleteById(id);
+
     }
 }
