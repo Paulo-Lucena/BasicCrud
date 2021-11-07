@@ -3,6 +3,7 @@ package com.crudizinho.BasicoCrud.service;
 import com.crudizinho.BasicoCrud.dto.MessageResponseDTO;
 import com.crudizinho.BasicoCrud.dto.request.PersonDTO;
 import com.crudizinho.BasicoCrud.entity.Person;
+import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
 import com.crudizinho.BasicoCrud.mapper.PersonMapper;
 import com.crudizinho.BasicoCrud.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service // Vai indicar ao Spring que aqui ficará as regras de negocio da aplicação
@@ -42,5 +44,14 @@ public class PersonService {
         return allPeople.stream() //Api Stram para transformar os dados em coleções
                 .map(personMapper::toDTO) // Para cada um dos registros da lista, vai ser chamado o metodo person, e será convertida para DTO
                 .collect(Collectors.toList()); //Saída será uma lista
+    }
+
+
+    public PersonDTO findById(Long id) throws PersonNotFoundException { //throws será a mensagem de exception
+        Optional<Person> optionalPerson = personRepository.findById(id); // Informa que será retornado um objeto
+        if (optionalPerson.isEmpty()){
+            throw new PersonNotFoundException(id);
+        }
+        return  personMapper.toDTO(optionalPerson.get());
     }
 }
