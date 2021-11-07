@@ -2,9 +2,7 @@ package com.crudizinho.BasicoCrud.controller;
 
 import com.crudizinho.BasicoCrud.dto.MessageResponseDTO;
 import com.crudizinho.BasicoCrud.dto.request.PersonDTO;
-import com.crudizinho.BasicoCrud.entity.Person;
 import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
-import com.crudizinho.BasicoCrud.repository.PersonRepository;
 import com.crudizinho.BasicoCrud.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +42,11 @@ public class PersonController {
     @GetMapping("/{id}") //Indica que será passado um ID para localizar a pessoa, ex /api/v1/people/1
     public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException { // @PathVariable indica que numa requisição HTTP será passada uma requisição // throws será a mensagem de exception
         return personService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid PersonDTO personDTO) throws PersonNotFoundException {
+        return personService.updateById(id, personDTO);
     }
 
     @DeleteMapping("/delete/{id}")

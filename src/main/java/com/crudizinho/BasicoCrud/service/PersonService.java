@@ -6,14 +6,10 @@ import com.crudizinho.BasicoCrud.entity.Person;
 import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
 import com.crudizinho.BasicoCrud.mapper.PersonMapper;
 import com.crudizinho.BasicoCrud.repository.PersonRepository;
-import org.hibernate.PersistentObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service // Vai indicar ao Spring que aqui ficará as regras de negocio da aplicação
@@ -33,10 +29,7 @@ public class PersonService {
         Person personToSave = personMapper.toModel(personDTO); // Utilizando a convresão do MapStruc
 
         Person savedPerson = personRepository.save(personToSave); // Para salvar o objeto no DB
-        return MessageResponseDTO // com esse retorno, evitamos criar um construtor para a classe MessageResponseDTO
-                .builder()
-                .message("Pessoa criada com o ID " + savedPerson.getId()) // Mensagem que irá retornar após a criação
-                .build();
+        return CreateMessageResponse(savedPerson.getId(), "Pessoa criada com o ID ");
     }
 
 
@@ -54,15 +47,31 @@ public class PersonService {
         return  personMapper.toDTO(person);
     }
 
-    private Person verifyIfExists(Long id) throws PersonNotFoundException {
-        return personRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id)); //Esse metodo evita que o codigo findbyid seja escrito varias vezes, assim fazemos um metodo para codigos repetidos
-    }
-
 
     public void delete(Long id) throws PersonNotFoundException {
         verifyIfExists(id);
         personRepository.deleteById(id);
 
+    }
+
+    public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
+        verifyIfExists(id);
+
+        Person personToUpdate = personMapper.toModel(personDTO); // Utilizando a convresão do MapStruc
+
+        Person updatePerson = personRepository.save(personToUpdate); // Para salvar o objeto no DB
+        return CreateMessageResponse(updatePerson.getId(), "Pessoa atualizada com o ID ");
+    }
+
+    private Person verifyIfExists(Long id) throws PersonNotFoundException {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id)); //Esse metodo evita que o codigo findbyid seja escrito varias vezes, assim fazemos um metodo para codigos repetidos
+    }
+
+    private MessageResponseDTO CreateMessageResponse(Long id, String messege) {
+        return MessageResponseDTO // com esse retorno, evitamos criar um construtor para a classe MessageResponseDTO
+                .builder()
+                .message(messege + id) // Mensagem que irá retornar após a criação
+                .build();
     }
 }
