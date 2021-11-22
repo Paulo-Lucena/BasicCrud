@@ -6,6 +6,7 @@ import com.crudizinho.BasicoCrud.entity.Person;
 import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
 import com.crudizinho.BasicoCrud.mapper.PersonMapper;
 import com.crudizinho.BasicoCrud.repository.PersonRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +14,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service // Vai indicar ao Spring que aqui ficará as regras de negocio da aplicação
+@AllArgsConstructor(onConstructor =  @__(@Autowired)) //Substitui o construtor
 public class PersonService {
 
     private PersonRepository personRepository; // Para injetar a classe PersonRepository
 
     private final PersonMapper personMapper = PersonMapper.INSTANCE; //  Para injetar a classe PersonMapper que irá converter os DTOs
-
-    @Autowired // Irá dar um Autowired no contrutor da classe e implentará a interfacePersonRepository (Injetar dentro de um construtor facilita para fazer testes unitários)
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
-
 
     public MessageResponseDTO createPerson(PersonDTO personDTO){
         Person personToSave = personMapper.toModel(personDTO); // Utilizando a convresão do MapStruc

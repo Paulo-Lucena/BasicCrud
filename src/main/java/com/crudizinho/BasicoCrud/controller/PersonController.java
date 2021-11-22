@@ -4,8 +4,10 @@ import com.crudizinho.BasicoCrud.dto.MessageResponseDTO;
 import com.crudizinho.BasicoCrud.dto.request.PersonDTO;
 import com.crudizinho.BasicoCrud.exception.PersonNotFoundException;
 import com.crudizinho.BasicoCrud.service.PersonService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestController // Significa que o controlador será acessado através de uma API REST.
 @RequestMapping("/api/v1/people") // Informa o caminho de acesso principal da API.
+@AllArgsConstructor(onConstructor =  @__(@Autowired))
 public class PersonController {
 
     /*@GetMapping // Primeiro metodo para testar a conexão.
@@ -21,10 +24,10 @@ public class PersonController {
 
     private PersonService personService; // Para injetar a classe PersonService
 
-    @Autowired // Irá dar um Autowired no construtor da classe e implentará a interfacePersonRepository (Injetar dentro de um construtor facilita para fazer testes unitários)
+    /*@Autowired // Irá dar um Autowired no construtor da classe e implentará a interfacePersonRepository (Injetar dentro de um construtor facilita para fazer testes unitários)
     public PersonController(PersonService personService) {
         this.personService = personService;
-    }
+    }*/
 
     @PostMapping // Anotação Post é para criação
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,6 +41,7 @@ public class PersonController {
         return personService.listAll();
 
     }
+
 
     @GetMapping("/{id}") //Indica que será passado um ID para localizar a pessoa, ex /api/v1/people/1
     public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException { // @PathVariable indica que numa requisição HTTP será passada uma requisição // throws será a mensagem de exception
